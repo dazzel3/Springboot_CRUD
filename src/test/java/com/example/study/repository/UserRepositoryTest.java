@@ -1,8 +1,9 @@
 package com.example.study.repository;
 
 import com.example.study.StudyApplicationTests;
+import com.example.study.model.entity.Item;
 import com.example.study.model.entity.User;
-import org.assertj.core.api.Assert;
+import org.assertj.core.error.ShouldBeAfterYear;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,12 +33,15 @@ public class UserRepositoryTest extends StudyApplicationTests {
     }
 
     @Test
+    @Transactional
     public void read() {
-        Optional<User> user = userRepository.findById(2L);
+        Optional<User> user = userRepository.findById(7L);
 
         user.ifPresent(selectUser -> {
-            System.out.println("user: "+selectUser);
-            System.out.println("email: "+selectUser.getEmail());
+            selectUser.getOrderDetailList().stream().forEach(orderDetail -> {
+                Item item = orderDetail.getItem();
+                System.out.println(item);
+            });
         });
     }
 
@@ -59,7 +63,7 @@ public class UserRepositoryTest extends StudyApplicationTests {
     public void delete() {
         Optional<User> user = userRepository.findById(2L);
 
-        Assert.assertTrue(user.isPresent()); // true
+        //Assert.assertTrue(user.isPresent()); // true
 
         user.ifPresent(selectUser -> {
             userRepository.delete(selectUser);
@@ -67,7 +71,7 @@ public class UserRepositoryTest extends StudyApplicationTests {
 
         Optional<User> deleteUser = userRepository.findById(2L);
 
-        Assert.assertFalse(deleteUser.ifPresent()); // false
+        //Assert.assertFalse(deleteUser.ifPresent()); // false
 
 //        if(deleteUser.isPresent()) {
 //            System.out.println("데이터 존재 : " +deleteUser.get());
