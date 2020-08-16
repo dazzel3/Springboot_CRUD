@@ -3,15 +3,16 @@ package com.example.study.repository;
 import com.example.study.StudyApplicationTests;
 import com.example.study.model.entity.Item;
 import com.example.study.model.entity.User;
-import org.assertj.core.error.ShouldBeAfterYear;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+
+
 
 public class UserRepositoryTest extends StudyApplicationTests {
 
@@ -21,66 +22,36 @@ public class UserRepositoryTest extends StudyApplicationTests {
 
     @Test
     public void create() {
+
+        String account = "Test01";
+        String password = "Test01";
+        String status = "REGISTERED";
+        String email = "Test01@gmail.com";
+        String phoneNumber = "010-1234-5678";
+        LocalDateTime registeredAt = LocalDateTime.now();
+        LocalDateTime createdAt = LocalDateTime.now();
+        String createdBy = "AdminServer";
+
         User user = new User();
-        user.setAccount("TestUser01");
-        user.setEmail("TestUser01@gmail.com");
-        user.setPhoneNumber("010-1234-5678");
-        user.setCreatedAt(LocalDateTime.now());
-        user.setCreatedBy("admin");
+        user.setAccount(account);
+        user.setPassword(password);
+        user.setStatus(status);
+        user.setEmail(email);
+        user.setPhoneNumber(phoneNumber);
+        user.setCreatedAt(createdAt);
+        user.setCreatedBy(createdBy);
 
         User newUser = userRepository.save(user);
-        System.out.println("newUser: "+newUser);
+
+        Assert.assertNotNull(newUser);
     }
 
     @Test
     @Transactional
     public void read() {
-        Optional<User> user = userRepository.findById(7L);
 
-        user.ifPresent(selectUser -> {
-            selectUser.getOrderDetailList().stream().forEach(orderDetail -> {
-                Item item = orderDetail.getItem();
-                System.out.println(item);
-            });
-        });
-    }
-
-    @Test
-    public void update() {
-        Optional<User> user = userRepository.findById(2L);
-
-        user.ifPresent(selectUser -> {
-            selectUser.setAccount("pppp");
-            selectUser.setUpdatedAt(LocalDateTime.now());
-            selectUser.setUpdatedBy("update method()");
-
-            userRepository.save(selectUser);
-        });
-    }
-
-    @Test
-    @Transactional
-    public void delete() {
-
-        // select * from user where id = ?
-        Optional<User> user = userRepository.findById(2L);
-
-        //Assert.assertTrue(user.isPresent()); // true
-
-        user.ifPresent(selectUser -> {
-            userRepository.delete(selectUser);
-        });
-
-        Optional<User> deleteUser = userRepository.findById(2L);
-
-        //Assert.assertFalse(deleteUser.ifPresent()); // false
-
-//        if(deleteUser.isPresent()) {
-//            System.out.println("데이터 존재 : " +deleteUser.get());
-//        } else {
-//            System.out.println("데이터 삭제 데이터 없음");
-//        }
-
+        User user = userRepository.findFirstByPhoneNumberOrderByIdDesc("010-1234-5678");
+        Assert.assertNotNull(user);
     }
 
 }
