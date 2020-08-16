@@ -41,6 +41,13 @@ public class UserRepositoryTest extends StudyApplicationTests {
         user.setCreatedAt(createdAt);
         user.setCreatedBy(createdBy);
 
+        User u = User.builder()
+                .account(account)
+                .password(password)
+                .status(status)
+                .email(email)
+                .build();
+
         User newUser = userRepository.save(user);
 
         Assert.assertNotNull(newUser);
@@ -51,6 +58,13 @@ public class UserRepositoryTest extends StudyApplicationTests {
     public void read() {
 
         User user = userRepository.findFirstByPhoneNumberOrderByIdDesc("010-1234-5678");
+
+        user
+                .setEmail("")
+                .setPhoneNumber("")
+                .setStatus("");
+
+        User u = new User().setAccount("").setEmail("").setPassword("");
 
         if(user != null) {
             user.getOrderGroupList().stream().forEach(orderGroup -> {
